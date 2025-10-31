@@ -93,6 +93,7 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<GalaxyGeneratorService>();
 builder.Services.AddScoped<PlanetGridGeneratorService>();
 builder.Services.AddScoped<SimulationService>();
+builder.Services.AddScoped<SpaceshipService>();
 
 // Agent services (Phase 6)
 builder.Services.AddSingleton<SystemGame.Api.Services.Agents.AgentBehaviorService>();

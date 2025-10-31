@@ -18,6 +18,47 @@ public class SpaceStationsController : ControllerBase
         _context = context;
     }
 
+    [HttpGet("game/{gameId}")]
+    public async Task<ActionResult<List<SpaceStationDto>>> GetPlayerSpaceStations(int gameId)
+    {
+        var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized();
+        }
+
+        var isInGame = await _context.PlayerGames
+            .AnyAsync(pg => pg.GameId == gameId && pg.UserId == userId);
+
+        if (!isInGame)
+        {
+            return Forbid();
+        }
+
+        var spaceStations = await _context.SpaceStations
+            .Include(ss => ss.Player)
+            .Include(ss => ss.StarSystem)
+            .Where(ss => ss.PlayerId == userId && ss.StarSystem.Galaxy.GameId == gameId)
+            .ToListAsync();
+
+        var stationDtos = spaceStations.Select(ss => new SpaceStationDto
+        {
+            Id = ss.Id,
+            Name = ss.Name,
+            SystemId = ss.SystemId,
+            SystemName = ss.StarSystem?.Name ?? "",
+            PlayerId = ss.PlayerId,
+            PlayerName = ss.Player?.DisplayName ?? "",
+            IronAmount = ss.IronAmount,
+            CopperAmount = ss.CopperAmount,
+            FuelAmount = ss.FuelAmount,
+            SoilAmount = ss.SoilAmount,
+            CreatedAt = ss.CreatedAt
+        }).ToList();
+
+        return Ok(stationDtos);
+    }
+
     [HttpGet("system/{systemId}")]
     public async Task<ActionResult<List<SpaceStationDto>>> GetSpaceStationsForSystem(int systemId)
     {
@@ -46,6 +87,7 @@ public class SpaceStationsController : ControllerBase
 
         var spaceStations = await _context.SpaceStations
             .Include(ss => ss.Player)
+            .Include(ss => ss.StarSystem)
             .Where(ss => ss.SystemId == systemId)
             .ToListAsync();
 
@@ -53,6 +95,8 @@ public class SpaceStationsController : ControllerBase
         {
             Id = ss.Id,
             Name = ss.Name,
+            SystemId = ss.SystemId,
+            SystemName = ss.StarSystem?.Name ?? "",
             PlayerId = ss.PlayerId,
             PlayerName = ss.Player?.DisplayName ?? "",
             IronAmount = ss.IronAmount,
@@ -97,6 +141,8 @@ public class SpaceStationsController : ControllerBase
         {
             Id = spaceStation.Id,
             Name = spaceStation.Name,
+            SystemId = spaceStation.SystemId,
+            SystemName = spaceStation.StarSystem?.Name ?? "",
             PlayerId = spaceStation.PlayerId,
             PlayerName = spaceStation.Player?.DisplayName ?? "",
             IronAmount = spaceStation.IronAmount,

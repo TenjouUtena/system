@@ -10,16 +10,19 @@ public class SimulationService
     private readonly ApplicationDbContext _context;
     private readonly ILogger<SimulationService> _logger;
     private readonly AgentExecutionService? _agentExecutionService;
+    private readonly SpaceshipService? _spaceshipService;
     private static readonly Random _random = new Random();
 
     public SimulationService(
         ApplicationDbContext context,
         ILogger<SimulationService> logger,
-        AgentExecutionService? agentExecutionService = null)
+        AgentExecutionService? agentExecutionService = null,
+        SpaceshipService? spaceshipService = null)
     {
         _context = context;
         _logger = logger;
         _agentExecutionService = agentExecutionService;
+        _spaceshipService = spaceshipService;
     }
 
     public async Task ProcessTickAsync(int gameId, CancellationToken cancellationToken = default)
@@ -39,6 +42,18 @@ public class SimulationService
 
             // Process resource production
             await ProcessResourceProductionAsync(gameId);
+
+            // Process spaceship construction (Phase 7)
+            if (_spaceshipService != null)
+            {
+                await _spaceshipService.ProcessShipConstructionAsync(gameId);
+            }
+
+            // Process spaceship movement (Phase 7)
+            if (_spaceshipService != null)
+            {
+                await _spaceshipService.ProcessShipMovementAsync(gameId);
+            }
 
             // Process agents (Phase 6)
             if (_agentExecutionService != null)
