@@ -198,24 +198,43 @@ system/
    - Time-based calculation
    - Continuous gameplay
 
-## Next Phase: Phase 6 - Agent System
+## Next Phase: Phase 6 - Agent System ⏭️ READY
 
-### Planned Features
+### Plan Created: Phase6_Plan.md
+
+A comprehensive development plan has been created for Phase 6 with detailed specifications:
 
 1. **Agent Framework**
-   - Entity behavior system
-   - Pluggable behaviors
-   - Configuration-driven actions
+   - Agent and AgentLog entities with full data model
+   - IAgentBehavior interface for pluggable behaviors
+   - BehaviorContext and BehaviorResult classes
+   - State management (Idle, Active, Paused, Error, Completed)
    
-2. **Basic Behaviors**
-   - Builder automation
-   - Resource ferry
-   - Patrol routes
+2. **Built-in Behaviors**
+   - AutoBuilderBehavior - Construction automation
+   - ResourceFerryBehavior - Resource transport
+   - ProductionMonitorBehavior - Resource monitoring
+   - IdleBehavior - Default state
    
-3. **Extensibility**
-   - LLM integration hooks
-   - Programmatic behaviors
-   - JSON configuration
+3. **Services**
+   - AgentBehaviorService - Behavior registration and management
+   - AgentExecutionService - Agent processing and lifecycle
+   - Integration with existing SimulationService
+   
+4. **API & Frontend**
+   - Full REST API for agent CRUD operations
+   - AgentList and AgentDetail pages
+   - Real-time updates via SignalR
+   - Agent log viewer
+   - Behavior configuration editor
+   
+5. **Extensibility**
+   - LLM integration hooks and base classes
+   - JSON configuration with validation
+   - Custom behavior support
+   - Future-ready architecture
+
+**See Phase6_Plan.md for complete specifications and implementation details.**
 
 ## How to Run
 
@@ -291,6 +310,7 @@ For questions or issues, refer to the inline documentation and comments in the c
 **Phase 3 Status**: ✅ COMPLETE
 **Phase 4 Status**: ✅ COMPLETE
 **Phase 5 Status**: ✅ COMPLETE
+**Phase 6 Status**: 📋 PLAN READY - See Phase6_Plan.md
 **Ready for Phase 6**: ✅ YES
-**Last Updated**: Phase 4 & 5 completion
+**Last Updated**: Phase 6 planning complete
 

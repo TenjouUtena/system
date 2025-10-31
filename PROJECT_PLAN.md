@@ -131,24 +131,40 @@ System is a multiplayer, real-time, long-term 4X strategy game where the univers
 
 ---
 
-### Phase 6: Extensible Agent Behavior System
+### Phase 6: Extensible Agent Behavior System 📋 PLAN READY
 
 **Goal**: Framework for programming entity AI behaviors
 
+**Status**: Detailed plan created in Phase6_Plan.md
+
 **Planned Deliverables**:
-- [ ] Agent entity and base interface
-- [ ] Behavior plugin architecture
-- [ ] Configuration-driven behaviors (JSON/config)
-- [ ] State machine for agent behaviors
-- [ ] Basic behaviors (Builder, Miner, etc.)
-- [ ] LLM integration hooks for future AI
-- [ ] Agent execution in simulation loop
+- [ ] Agent and AgentLog entities with full data model
+- [ ] IAgentBehavior interface and behavior plugin architecture
+- [ ] BehaviorContext and BehaviorResult classes
+- [ ] Configuration-driven behaviors with JSON validation
+- [ ] State machine for agent behaviors (Idle, Active, Paused, Error, Completed)
+- [ ] Built-in behaviors:
+  - [ ] AutoBuilderBehavior - Construction automation
+  - [ ] ResourceFerryBehavior - Resource transport
+  - [ ] ProductionMonitorBehavior - Resource monitoring
+  - [ ] IdleBehavior - Default behavior
+- [ ] AgentBehaviorService and AgentExecutionService
+- [ ] Full REST API and frontend UI for agent management
+- [ ] LLM integration hooks and base classes for future AI
+- [ ] Agent execution integrated in simulation loop
+- [ ] Real-time updates via SignalR
 
 **Design Principles**:
 - Highly extensible and pluggable
 - Support programmatic behaviors
 - Ready for LLM-based decision making
-- JSON configuration support
+- JSON configuration with validation
+- Performance optimized (100+ agents per game)
+- Secure execution sandboxing
+
+**Timeline**: 2-3 weeks
+
+See **Phase6_Plan.md** for complete specifications, data models, API endpoints, and implementation details.
 
 ---
 
@@ -337,10 +353,10 @@ Each phase must:
 
 - Phase 1: ✅ Complete
 - Phase 2: ✅ Complete
-- Phase 3: 1-2 weeks
-- Phase 4: 1-2 weeks
-- Phase 5: 2-3 weeks
-- Phase 6: 2-3 weeks
+- Phase 3: ✅ Complete
+- Phase 4: ✅ Complete
+- Phase 5: ✅ Complete
+- Phase 6: 📋 Plan Ready (Est. 2-3 weeks)
 - Phase 7: 1-2 weeks
 - Phase 8: 1-2 weeks
 - Phase 9: 1-2 weeks
@@ -366,7 +382,7 @@ Each phase must:
 
 ---
 
-**Document Version**: 1.0  
-**Last Updated**: Phase 2 Completion  
-**Status**: In Progress - Ready for Phase 3
+**Document Version**: 1.2  
+**Last Updated**: Phase 6 Planning Complete  
+**Status**: In Progress - Phase 1-5 Complete, Phase 6 Plan Ready
 
