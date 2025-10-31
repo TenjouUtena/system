@@ -1,0 +1,47 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/system-fe/node_modules
+/system-fe/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/system-fe/coverage
+
+# next.js
+/system-fe/.next/
+/system-fe/out/
+
+# production
+/system-fe/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+/system-fe/next-env.d.ts
+
+
+#### Backend
+
+/system-be/SystemGame.Api/bin
+/system-be/SystemGame.Api/obj
