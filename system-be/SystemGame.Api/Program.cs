@@ -99,6 +99,14 @@ builder.Services.AddScoped<SpaceshipService>();
 builder.Services.AddSingleton<SystemGame.Api.Services.Agents.AgentBehaviorService>();
 builder.Services.AddScoped<SystemGame.Api.Services.Agents.AgentExecutionService>();
 
+// Combat services (Phase 8)
+builder.Services.AddScoped<CombatService>();
+builder.Services.AddScoped<NpcSpawnService>();
+
+// Game balance configuration (Phase 10)
+builder.Services.AddSingleton<GameConfigService>();
+builder.Services.Configure<GameConfig>(builder.Configuration.GetSection("GameConfig"));
+
 // SignalR
 builder.Services.AddSignalR();
 

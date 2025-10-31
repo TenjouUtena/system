@@ -11,18 +11,24 @@ public class SimulationService
     private readonly ILogger<SimulationService> _logger;
     private readonly AgentExecutionService? _agentExecutionService;
     private readonly SpaceshipService? _spaceshipService;
+    private readonly CombatService? _combatService;
+    private readonly NpcSpawnService? _npcSpawnService;
     private static readonly Random _random = new Random();
 
     public SimulationService(
         ApplicationDbContext context,
         ILogger<SimulationService> logger,
         AgentExecutionService? agentExecutionService = null,
-        SpaceshipService? spaceshipService = null)
+        SpaceshipService? spaceshipService = null,
+        CombatService? combatService = null,
+        NpcSpawnService? npcSpawnService = null)
     {
         _context = context;
         _logger = logger;
         _agentExecutionService = agentExecutionService;
         _spaceshipService = spaceshipService;
+        _combatService = combatService;
+        _npcSpawnService = npcSpawnService;
     }
 
     public async Task ProcessTickAsync(int gameId, CancellationToken cancellationToken = default)
@@ -59,6 +65,18 @@ public class SimulationService
             if (_agentExecutionService != null)
             {
                 await _agentExecutionService.ProcessAgentsAsync(gameId, cancellationToken);
+            }
+
+            // Process NPC spawning and behaviors (Phase 8)
+            if (_npcSpawnService != null)
+            {
+                await _npcSpawnService.ProcessNpcSpawningAsync(gameId, cancellationToken);
+            }
+
+            // Process combat (Phase 8)
+            if (_combatService != null)
+            {
+                await _combatService.ProcessCombatAsync(gameId, cancellationToken);
             }
 
             await _context.SaveChangesAsync(cancellationToken);
