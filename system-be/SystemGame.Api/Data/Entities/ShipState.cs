@@ -7,8 +7,10 @@ public enum ShipState
 {
     UnderConstruction = 0,  // Being built at shipyard
     Idle = 1,               // Parked and waiting
-    Moving = 2,             // Traveling to destination
-    Colonizing = 3,         // Colony ship deploying to planet
-    InCombat = 4,           // Engaged in battle
-    Destroyed = 5           // Ship destroyed
+    Active = 2,             // Active and operational
+    Moving = 3,             // Traveling to destination
+    Colonizing = 4,         // Colony ship deploying to planet
+    InCombat = 5,           // Engaged in battle
+    Fleeing = 6,            // Fleeing from battle
+    Destroyed = 7           // Ship destroyed
 }

@@ -28,6 +28,10 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<AgentLog> AgentLogs { get; set; }
     public DbSet<Spaceship> Spaceships { get; set; }
     public DbSet<Shipyard> Shipyards { get; set; }
+    public DbSet<Battle> Battles { get; set; }
+    public DbSet<BattleParticipant> BattleParticipants { get; set; }
+    public DbSet<BattleEvent> BattleEvents { get; set; }
+    public DbSet<NpcShip> NpcShips { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -293,6 +297,98 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             entity.HasIndex(e => e.PlayerId);
             entity.HasIndex(e => e.State);
             entity.HasIndex(e => e.CurrentSystemId);
+        });
+
+        // Configure Battle
+        builder.Entity<Battle>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Game)
+                  .WithMany()
+                  .HasForeignKey(e => e.GameId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.System)
+                  .WithMany()
+                  .HasForeignKey(e => e.SystemId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.WinnerPlayer)
+                  .WithMany()
+                  .HasForeignKey(e => e.WinnerPlayerId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasMany(e => e.Participants)
+                  .WithOne(p => p.Battle)
+                  .HasForeignKey(p => p.BattleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Events)
+                  .WithOne(e => e.Battle)
+                  .HasForeignKey(e => e.BattleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => e.GameId);
+            entity.HasIndex(e => e.SystemId);
+            entity.HasIndex(e => e.State);
+        });
+
+        // Configure BattleParticipant
+        builder.Entity<BattleParticipant>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Battle)
+                  .WithMany(b => b.Participants)
+                  .HasForeignKey(e => e.BattleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Spaceship)
+                  .WithMany()
+                  .HasForeignKey(e => e.SpaceshipId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Player)
+                  .WithMany()
+                  .HasForeignKey(e => e.PlayerId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasIndex(e => e.BattleId);
+            entity.HasIndex(e => e.SpaceshipId);
+        });
+
+        // Configure BattleEvent
+        builder.Entity<BattleEvent>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Battle)
+                  .WithMany(b => b.Events)
+                  .HasForeignKey(e => e.BattleId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.AttackerShip)
+                  .WithMany()
+                  .HasForeignKey(e => e.AttackerShipId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.DefenderShip)
+                  .WithMany()
+                  .HasForeignKey(e => e.DefenderShipId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => new { e.BattleId, e.Round });
+        });
+
+        // Configure NpcShip
+        builder.Entity<NpcShip>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.HasOne(e => e.Spaceship)
+                  .WithMany()
+                  .HasForeignKey(e => e.SpaceshipId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Game)
+                  .WithMany()
+                  .HasForeignKey(e => e.GameId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.SpawnSystem)
+                  .WithMany()
+                  .HasForeignKey(e => e.SpawnSystemId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.TargetShip)
+                  .WithMany()
+                  .HasForeignKey(e => e.TargetShipId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => e.SpaceshipId).IsUnique();
+            entity.HasIndex(e => e.GameId);
         });
     }
 }
