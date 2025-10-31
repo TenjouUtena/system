@@ -24,10 +24,9 @@ public class ProductionMonitorBehavior : IAgentBehavior
                 if (timeSinceLastExecution.TotalSeconds < config.CheckInterval)
                 {
                     var delay = TimeSpan.FromSeconds(config.CheckInterval - timeSinceLastExecution.TotalSeconds);
-                    return BehaviorResult.SuccessResult($"Next check in {delay.TotalSeconds:F0}s", AgentState.Active)
-                    {
-                        NextExecutionDelay = delay
-                    };
+                    var result = BehaviorResult.SuccessResult($"Next check in {delay.TotalSeconds:F0}s", AgentState.Active);
+                    result.NextExecutionDelay = delay;
+                    return result;
                 }
             }
 
@@ -75,12 +74,11 @@ public class ProductionMonitorBehavior : IAgentBehavior
             {
                 context.SharedData[$"agent_{agent.Id}_alerts"] = alerts;
                 
-                return BehaviorResult.SuccessResult(
+                var result = BehaviorResult.SuccessResult(
                     $"Found {alerts.Count} resource alert(s)",
-                    AgentState.Active)
-                {
-                    LogData = JsonSerializer.Serialize(new { Alerts = alerts })
-                };
+                    AgentState.Active);
+                result.LogData = JsonSerializer.Serialize(new { Alerts = alerts });
+                return result;
             }
 
             return BehaviorResult.SuccessResult("All monitored resources above thresholds", AgentState.Active);

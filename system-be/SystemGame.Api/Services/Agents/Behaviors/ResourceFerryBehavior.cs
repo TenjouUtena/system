@@ -29,10 +29,9 @@ public class ResourceFerryBehavior : IAgentBehavior
                 if (timeSinceLastExecution.TotalSeconds < config.FerryInterval)
                 {
                     var delay = TimeSpan.FromSeconds(config.FerryInterval - timeSinceLastExecution.TotalSeconds);
-                    return BehaviorResult.SuccessResult($"Waiting {delay.TotalSeconds:F0}s before next ferry", AgentState.Active)
-                    {
-                        NextExecutionDelay = delay
-                    };
+                    var result = BehaviorResult.SuccessResult($"Waiting {delay.TotalSeconds:F0}s before next ferry", AgentState.Active);
+                    result.NextExecutionDelay = delay;
+                    return result;
                 }
             }
 
