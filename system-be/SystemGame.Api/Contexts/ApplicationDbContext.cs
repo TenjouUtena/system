@@ -24,6 +24,8 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<Building> Buildings { get; set; }
     public DbSet<Builder> Builders { get; set; }
     public DbSet<SpaceStation> SpaceStations { get; set; }
+    public DbSet<Agent> Agents { get; set; }
+    public DbSet<AgentLog> AgentLogs { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -186,6 +188,52 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
                   .WithMany(s => s.SpaceStations)
                   .HasForeignKey(e => e.SystemId)
                   .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure Agent
+        builder.Entity<Agent>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.HasOne(e => e.Player)
+                  .WithMany()
+                  .HasForeignKey(e => e.PlayerId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Game)
+                  .WithMany()
+                  .HasForeignKey(e => e.GameId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.CurrentSystem)
+                  .WithMany()
+                  .HasForeignKey(e => e.CurrentSystemId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.CurrentPlanet)
+                  .WithMany()
+                  .HasForeignKey(e => e.CurrentPlanetId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Builder)
+                  .WithMany()
+                  .HasForeignKey(e => e.BuilderId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasMany(e => e.Logs)
+                  .WithOne(l => l.Agent)
+                  .HasForeignKey(l => l.AgentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => e.GameId);
+            entity.HasIndex(e => e.PlayerId);
+            entity.HasIndex(e => e.State);
+        });
+
+        // Configure AgentLog
+        builder.Entity<AgentLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Message).IsRequired().HasMaxLength(500);
+            entity.HasOne(e => e.Agent)
+                  .WithMany(a => a.Logs)
+                  .HasForeignKey(e => e.AgentId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasIndex(e => new { e.AgentId, e.Timestamp });
         });
     }
 }

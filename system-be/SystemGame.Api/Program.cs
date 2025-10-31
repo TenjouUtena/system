@@ -94,6 +94,10 @@ builder.Services.AddScoped<GalaxyGeneratorService>();
 builder.Services.AddScoped<PlanetGridGeneratorService>();
 builder.Services.AddScoped<SimulationService>();
 
+// Agent services (Phase 6)
+builder.Services.AddSingleton<SystemGame.Api.Services.Agents.AgentBehaviorService>();
+builder.Services.AddScoped<SystemGame.Api.Services.Agents.AgentExecutionService>();
+
 // SignalR
 builder.Services.AddSignalR();
 

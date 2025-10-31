@@ -107,6 +107,12 @@ export default function GameDetailPage() {
             </div>
             <div className="flex items-center space-x-4">
               <button
+                onClick={() => router.push(`/games/${gameId}/agents`)}
+                className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-800"
+              >
+                Agents
+              </button>
+              <button
                 onClick={() => router.push('/games')}
                 className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-gray-900"
               >
