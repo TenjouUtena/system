@@ -17,17 +17,14 @@ jobs:
           dotnet-version: '9.0.x' # Or your specific .NET version
 
       - name: Restore dependencies
+        working-directory: system-be/SystemGame.Api
         run: dotnet restore
 
       - name: Build application
+        working-directory: system-be/SystemGame.Api
         run: dotnet build --configuration Release --no-restore
 
       - name: Publish application
+        working-directory: system-be/SystemGame.Api
         run: dotnet publish --configuration Release --no-build --output publish--os linux --arch x64 /t:PublishContainer -p ContainerRegistry=docker.io    
 
-      - name: Deploy to Railway
-        uses: bervProject/railway-deploy@main
-        env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        with:
-          service: "system-be"
