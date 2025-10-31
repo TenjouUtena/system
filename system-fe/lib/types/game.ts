@@ -11,6 +11,7 @@ export interface Game {
   description?: string;
   playerCount: number;
   maxPlayers: number;
+  systemCount: number;
   isActive: boolean;
   createdAt: string;
   isJoined: boolean;

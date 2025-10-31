@@ -7,6 +7,7 @@ public class GameDto
     public string? Description { get; set; }
     public int PlayerCount { get; set; }
     public int MaxPlayers { get; set; }
+    public int SystemCount { get; set; }
     public bool IsActive { get; set; }
     public DateTime CreatedAt { get; set; }
     public bool IsJoined { get; set; }

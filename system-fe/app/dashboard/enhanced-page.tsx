@@ -8,21 +8,13 @@ import { Card, CardHeader, CardContent } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { LoadingPage } from '@/components/ui/LoadingSpinner';
 import { Tooltip } from '@/components/ui/Tooltip';
-import { getGamesByUser } from '@/lib/api/gameApi';
-
-interface GameSummary {
-  id: number;
-  name: string;
-  systemCount: number;
-  playerCount: number;
-  isActive: boolean;
-  createdAt: string;
-}
+import { gameApi } from '@/lib/api/game';
+import type { Game } from '@/lib/types/game';
 
 export default function EnhancedDashboardPage() {
   const { user, isLoading: authLoading, isAuthenticated, logout } = useAuth();
   const router = useRouter();
-  const [games, setGames] = useState<GameSummary[]>([]);
+  const [games, setGames] = useState<Game[]>([]);
   const [isLoadingGames, setIsLoadingGames] = useState(true);
 
   useEffect(() => {
@@ -40,7 +32,7 @@ export default function EnhancedDashboardPage() {
   const loadGames = async () => {
     try {
       setIsLoadingGames(true);
-      const gamesData = await getGamesByUser();
+      const gamesData = await gameApi.getGames();
       setGames(gamesData);
     } catch (error) {
       console.error('Error loading games:', error);

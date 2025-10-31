@@ -1,5 +1,5 @@
 // Combat API client for Phase 8
-import axios from './axiosConfig';
+import axios from 'axios';
 import type { Battle, BattleSummary, NpcShip, SpawnNpcRequest } from '../types/combat';
 
 /**

@@ -41,6 +41,7 @@ public class GamesController : ControllerBase
 
         var games = await _context.Games
             .Include(g => g.Players)
+            .Include(g => g.Galaxy)
             .Where(g => g.IsActive)
             .OrderByDescending(g => g.CreatedAt)
             .ToListAsync();
@@ -52,6 +53,7 @@ public class GamesController : ControllerBase
             Description = g.Description,
             PlayerCount = g.Players.Count,
             MaxPlayers = g.MaxPlayers,
+            SystemCount = g.Galaxy?.SystemCount ?? 0,
             IsActive = g.IsActive,
             CreatedAt = g.CreatedAt,
             IsJoined = g.Players.Any(p => p.UserId == userId),
@@ -72,6 +74,7 @@ public class GamesController : ControllerBase
 
         var game = await _context.Games
             .Include(g => g.Players)
+            .Include(g => g.Galaxy)
             .FirstOrDefaultAsync(g => g.Id == id);
 
         if (game == null)
@@ -86,6 +89,7 @@ public class GamesController : ControllerBase
             Description = game.Description,
             PlayerCount = game.Players.Count,
             MaxPlayers = game.MaxPlayers,
+            SystemCount = game.Galaxy?.SystemCount ?? 0,
             IsActive = game.IsActive,
             CreatedAt = game.CreatedAt,
             IsJoined = game.Players.Any(p => p.UserId == userId),
@@ -137,6 +141,9 @@ public class GamesController : ControllerBase
 
             _logger.LogInformation("Game {GameId} created successfully", game.Id);
 
+            // Reload to get the galaxy
+            await _context.Entry(game).Reference(g => g.Galaxy).LoadAsync();
+
             return Ok(new GameDto
             {
                 Id = game.Id,
@@ -144,6 +151,7 @@ public class GamesController : ControllerBase
                 Description = game.Description,
                 PlayerCount = 1,
                 MaxPlayers = game.MaxPlayers,
+                SystemCount = game.Galaxy?.SystemCount ?? request.SystemCount,
                 IsActive = game.IsActive,
                 CreatedAt = game.CreatedAt,
                 IsJoined = true,

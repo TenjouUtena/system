@@ -45,13 +45,13 @@ public class NpcSpawnService
                 var npcsToSpawn = MIN_NPCS_PER_GAME - existingNpcCount;
                 for (int i = 0; i < npcsToSpawn; i++)
                 {
-                    await SpawnNpcAsync(gameId, cancellationToken);
+                    await SpawnNpcAsync(gameId, cancellationToken: cancellationToken);
                 }
             }
             // Randomly spawn additional NPCs up to max
             else if (existingNpcCount < MAX_NPCS_PER_GAME && _random.NextDouble() < 0.1) // 10% chance per check
             {
-                await SpawnNpcAsync(gameId, cancellationToken);
+                await SpawnNpcAsync(gameId, cancellationToken: cancellationToken);
             }
 
             // Process NPC behaviors

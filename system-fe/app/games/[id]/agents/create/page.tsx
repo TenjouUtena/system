@@ -12,7 +12,7 @@ export default function CreateAgentPage() {
   const gameId = parseInt(params.id as string);
   
   const [name, setName] = useState('');
-  const [type, setType] = useState(AgentTypes.BUILDER);
+  const [type, setType] = useState<string>(AgentTypes.BUILDER);
   const [behaviorName, setBehaviorName] = useState('');
   const [behaviorConfig, setBehaviorConfig] = useState('');
   const [builderId, setBuilderId] = useState<number | undefined>();
