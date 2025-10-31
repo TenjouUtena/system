@@ -26,9 +26,8 @@ jobs:
         run: dotnet publish --configuration Release --no-build --output publish--os linux --arch x64 /t:PublishContainer -p ContainerRegistry=docker.io    
 
       - name: Deploy to Railway
-        uses: railwayapp/github-action@v2
+        uses: bervProject/railway-deploy@main
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
         with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-          # Optional: railway_project: ${{ secrets.RAILWAY_PROJECT_ID }}
-          # Optional: railway_service: ${{ secrets.RAILWAY_SERVICE_ID }}
-          # Optional: service_name: "MyDotNetApp" # If you want to specify a service name
+          service: "system-be"
