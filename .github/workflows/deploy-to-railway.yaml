@@ -1,0 +1,34 @@
+on:
+  push:
+    branches:
+      - development # Or your desired branch
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # Or your specific .NET version
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build application
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Publish application
+        run: dotnet publish --configuration Release --no-build --output publish--os linux --arch x64 /t:PublishContainer -p ContainerRegistry=docker.io    
+
+      - name: Deploy to Railway
+        uses: railwayapp/github-action@v2
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+          # Optional: railway_project: ${{ secrets.RAILWAY_PROJECT_ID }}
+          # Optional: railway_service: ${{ secrets.RAILWAY_SERVICE_ID }}
+          # Optional: service_name: "MyDotNetApp" # If you want to specify a service name
