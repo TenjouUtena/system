@@ -26,6 +26,8 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
     public DbSet<SpaceStation> SpaceStations { get; set; }
     public DbSet<Agent> Agents { get; set; }
     public DbSet<AgentLog> AgentLogs { get; set; }
+    public DbSet<Spaceship> Spaceships { get; set; }
+    public DbSet<Shipyard> Shipyards { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -234,6 +236,63 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
                   .HasForeignKey(e => e.AgentId)
                   .OnDelete(DeleteBehavior.Cascade);
             entity.HasIndex(e => new { e.AgentId, e.Timestamp });
+        });
+
+        // Configure Shipyard
+        builder.Entity<Shipyard>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.HasOne(e => e.Player)
+                  .WithMany()
+                  .HasForeignKey(e => e.PlayerId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Game)
+                  .WithMany()
+                  .HasForeignKey(e => e.GameId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.SpaceStation)
+                  .WithMany()
+                  .HasForeignKey(e => e.SpaceStationId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasMany(e => e.Spaceships)
+                  .WithOne(s => s.Shipyard)
+                  .HasForeignKey(s => s.ShipyardId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasIndex(e => e.SpaceStationId);
+        });
+
+        // Configure Spaceship
+        builder.Entity<Spaceship>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).IsRequired().HasMaxLength(100);
+            entity.HasOne(e => e.Player)
+                  .WithMany()
+                  .HasForeignKey(e => e.PlayerId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.Game)
+                  .WithMany()
+                  .HasForeignKey(e => e.GameId)
+                  .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.CurrentSystem)
+                  .WithMany()
+                  .HasForeignKey(e => e.CurrentSystemId)
+                  .OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne(e => e.DestinationSystem)
+                  .WithMany()
+                  .HasForeignKey(e => e.DestinationSystemId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.HasOne(e => e.Shipyard)
+                  .WithMany(sy => sy.Spaceships)
+                  .HasForeignKey(e => e.ShipyardId)
+                  .OnDelete(DeleteBehavior.SetNull);
+            entity.Property(e => e.ConstructionProgress).HasDefaultValue(0);
+            entity.ToTable(t => t.HasCheckConstraint("CK_Spaceship_ProgressRange", "\"ConstructionProgress\" >= 0 AND \"ConstructionProgress\" <= 100"));
+            entity.HasIndex(e => e.GameId);
+            entity.HasIndex(e => e.PlayerId);
+            entity.HasIndex(e => e.State);
+            entity.HasIndex(e => e.CurrentSystemId);
         });
     }
 }
