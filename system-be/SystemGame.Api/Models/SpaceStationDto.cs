@@ -4,6 +4,8 @@ public class SpaceStationDto
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;
+    public int SystemId { get; set; }
+    public string SystemName { get; set; } = string.Empty;
     public string PlayerId { get; set; } = string.Empty;
     public string PlayerName { get; set; } = string.Empty;
     public double IronAmount { get; set; }
