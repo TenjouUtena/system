@@ -26,5 +26,5 @@ jobs:
 
       - name: Publish application
         working-directory: system-be/SystemGame.Api
-        run: dotnet publish --configuration Release --no-build --output publish--os linux --arch x64 /t:PublishContainer -p ContainerRegistry=docker.io    
+        run: dotnet publish --configuration Release --no-build --output publish --os linux --arch x64 /t:PublishContainer -p ContainerRegistry=docker.io    
 
