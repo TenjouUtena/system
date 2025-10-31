@@ -334,7 +334,13 @@ export default function AgentDetailPage() {
                 <div className="col-span-2">
                   <span className="font-medium text-gray-700">Behavior Config:</span>
                   <pre className="mt-2 p-3 bg-gray-100 rounded text-sm overflow-x-auto">
-                    {JSON.stringify(JSON.parse(agent.behaviorConfig), null, 2)}
+                    {(() => {
+                      try {
+                        return JSON.stringify(JSON.parse(agent.behaviorConfig), null, 2);
+                      } catch {
+                        return agent.behaviorConfig;
+                      }
+                    })()}
                   </pre>
                 </div>
               )}
@@ -377,7 +383,13 @@ export default function AgentDetailPage() {
                       <p className="text-gray-900">{log.message}</p>
                       {log.data && (
                         <pre className="mt-2 text-xs bg-gray-100 p-2 rounded overflow-x-auto">
-                          {JSON.stringify(JSON.parse(log.data), null, 2)}
+                          {(() => {
+                            try {
+                              return JSON.stringify(JSON.parse(log.data), null, 2);
+                            } catch {
+                              return log.data;
+                            }
+                          })()}
                         </pre>
                       )}
                     </div>

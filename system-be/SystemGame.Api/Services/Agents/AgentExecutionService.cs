@@ -137,7 +137,7 @@ public class AgentExecutionService
 
         // Verify game exists and player is a member
         var playerGame = await _context.PlayerGames
-            .FirstOrDefaultAsync(pg => pg.GameId == request.GameId && pg.PlayerId == playerId);
+            .FirstOrDefaultAsync(pg => pg.GameId == request.GameId && pg.UserId == playerId);
 
         if (playerGame == null)
         {

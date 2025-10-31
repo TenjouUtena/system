@@ -39,13 +39,13 @@ public class AutoBuilderBehavior : IAgentBehavior
                 return BehaviorResult.SuccessResult("Builder is currently busy", AgentState.Active);
             }
 
-            // Find incomplete buildings on configured planets
+            // Find incomplete buildings on configured planets that don't have construction started
             var query = context.DbContext.Buildings
                 .Include(b => b.GridSquare)
                     .ThenInclude(g => g.PlanetGrid)
                 .Where(b => !b.IsComplete && 
                            b.PlayerId == agent.PlayerId &&
-                           b.AssignedBuilding == null);
+                           b.ConstructionStartTime == null);
 
             // Filter by planet IDs if configured
             if (config.PlanetIds != null && config.PlanetIds.Any())

@@ -98,9 +98,15 @@ public class ResourceFerryBehavior : IAgentBehavior
                     AgentState.Idle);
             }
 
-            // Calculate ferry amount
+            // Calculate ferry amount - ensure we don't transfer more than available or max
             var ferryAmount = Math.Min(sourceAmount, config.MaxAmount);
-            ferryAmount = Math.Max(ferryAmount, config.MinAmount);
+            // Only apply minimum if we have at least that much
+            if (ferryAmount < config.MinAmount)
+            {
+                return BehaviorResult.SuccessResult(
+                    $"Available amount ({ferryAmount:F1}) is less than minimum ferry amount ({config.MinAmount})",
+                    AgentState.Idle);
+            }
 
             // Transfer resources
             switch (resourceType)
