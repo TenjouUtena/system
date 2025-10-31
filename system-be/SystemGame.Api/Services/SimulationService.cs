@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using SystemGame.Api.Contexts;
 using SystemGame.Api.Data.Entities;
+using SystemGame.Api.Services.Agents;
 
 namespace SystemGame.Api.Services;
 
@@ -8,22 +9,25 @@ public class SimulationService
 {
     private readonly ApplicationDbContext _context;
     private readonly ILogger<SimulationService> _logger;
+    private readonly AgentExecutionService? _agentExecutionService;
     private static readonly Random _random = new Random();
 
     public SimulationService(
         ApplicationDbContext context,
-        ILogger<SimulationService> logger)
+        ILogger<SimulationService> logger,
+        AgentExecutionService? agentExecutionService = null)
     {
         _context = context;
         _logger = logger;
+        _agentExecutionService = agentExecutionService;
     }
 
-    public async Task ProcessTickAsync(int gameId)
+    public async Task ProcessTickAsync(int gameId, CancellationToken cancellationToken = default)
     {
         try
         {
             var game = await _context.Games
-                .FirstOrDefaultAsync(g => g.Id == gameId && g.IsActive);
+                .FirstOrDefaultAsync(g => g.Id == gameId && g.IsActive, cancellationToken);
 
             if (game == null)
             {
@@ -36,7 +40,13 @@ public class SimulationService
             // Process resource production
             await ProcessResourceProductionAsync(gameId);
 
-            await _context.SaveChangesAsync();
+            // Process agents (Phase 6)
+            if (_agentExecutionService != null)
+            {
+                await _agentExecutionService.ProcessAgentsAsync(gameId, cancellationToken);
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
         }
         catch (Exception ex)
         {
